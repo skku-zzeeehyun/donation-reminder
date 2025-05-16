@@ -28,8 +28,12 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add results/*.csv
-          git commit -m "Add results for $(date +%Y-%m-%d)" || echo "No changes to commit"
-          git push
+          if ls results/*.csv > /dev/null 2>&1; then
+            git add results/*.csv
+            git commit -m "Add results for $(date +%Y-%m-%d)"
+            git push
+          else
+            echo "No CSV files to commit"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
