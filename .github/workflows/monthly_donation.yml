@@ -23,7 +23,7 @@ jobs:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           DONUS_API_KEY: ${{ secrets.DONUS_API_KEY }}
-        run: python donus_api.py
+        run: python test3.py
       - name: Commit results
         run: |
           git config --global user.name "GitHub Actions"
