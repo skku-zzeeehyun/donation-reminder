@@ -1,0 +1,35 @@
+name: Monthly Donation Reminder
+
+on:
+  schedule:
+    - cron: "0 10 28-31 * *"  # KST 19:00, 28~31일
+  workflow_dispatch:
+
+jobs:
+  run-donation-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install dependencies
+        run: |
+          pip install requests pandas
+      - name: Run donation script
+        env:
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          DONUS_API_KEY: ${{ secrets.DONUS_API_KEY }}
+        run: python donus_api.py
+      - name: Commit results
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add results/*.csv
+          git commit -m "Add results for $(date +%Y-%m-%d)" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
